@@ -6,7 +6,7 @@
 const int SIZE = 21;
 
 enum attribute {Enter = -1, Exit = 0, Open = 1, Wall = 2, Unassigned = 3};
-enum generation {Unvisited = 0, Visiting = 1, Visited = 2};
+enum generation {Unvisited = 0, Visited = 1};
 
 /* maze blocks
 attribute atr:
@@ -17,14 +17,12 @@ attribute atr:
 	3 = unassigned (there should be 0 of these when the maze is fully generated)
 generation gen: //only for maze generation purposes
 	0 = unvisited
-	1 = visit in progress
-	2 = visited
+	1 = visited
 isSeen:
 	true = draw it on the map
 	false = show it as not seen yet
 */
 struct block{
-	int times_visited = 0;
 	attribute atr = Unassigned;
 	bool isSeen = false;
 	generation gen = Unvisited;
