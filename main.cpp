@@ -17,8 +17,8 @@ int main()
 
 	cout << "Generating a " << SIZE << "x" << SIZE << " maze took " << duration << " microseconds." << '\n';
 	m.gen_walls();
-	m.create_entrance();
-	cout << "After entrance creation: \n";
+	m.gen_start();
+	cout << "After entrance generation: \n";
 	m.print();
 	cout << "The minimum steps it will take to complete this maze is: ";
 	cout << m.min_steps() << '\n';

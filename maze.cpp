@@ -3,7 +3,6 @@
 #include <random> //uniform_int_distribution
 #include <stack> //stack s for Depth First Searches
 #include <vector> //vector for min_steps
-#include <map>
 #include "universal.h" //randmaze (random numbers)
 
 using std::cout;
@@ -78,26 +77,26 @@ void maze::gen_main()
 		//cout << x << " " << y << '\n';
 
 		//check if we can check right
-		if(x < SIZE-2){ //if x is at least 2 less than SIZE
-			//check right
+		if(x < SIZE-2) //if x is at least 2 less than SIZE
+		{ //check right
 			if(grid[x+1][y].atr == Unassigned && grid[x+2][y].atr == Unassigned)
 				dir += "r";
 		}
 		//check if we can check up
-		if(y < SIZE-2){ //if y is at least 2 less than the SIZE
-			//check up
+		if(y < SIZE-2) //if y is at least 2 less than the SIZE
+		{ //check up
 			if(grid[x][y+1].atr == Unassigned && grid[x][y+2].atr == Unassigned)
 				dir += "u";
 		}
 		//check if we can check left
-		if(x > 1){ //if x is at least 2
-			//check left
+		if(x > 1) //if x is at least 2
+		{ //check left
 			if(grid[x-1][y].atr == Unassigned && grid[x-2][y].atr == Unassigned)
 				dir += "l";
 		}
 		//check if we can check up
-		if(y > 1){//if y is at least 2
-			//check up
+		if(y > 1) //if y is at least 2
+		{ //check up
 			if(grid[x][y-1].atr == Unassigned && grid[x][y-2].atr == Unassigned)
 				dir += "d";
 		}
@@ -159,7 +158,7 @@ void maze::gen_walls()
 	}
 }
 
-void maze::create_entrance()
+void maze::gen_start()
 {
 	int swtch;
 	/* Walls:
@@ -172,25 +171,25 @@ void maze::create_entrance()
 
 	swtch = wall(randmaze); //we store the value bc we'll use it later
 
-	create_switch_case(swtch, true);
-	create_exit(swtch);
+	gen_switch_case(swtch, true);
+	gen_exit(swtch);
 }
 
-int maze::create_exit(const int& ent)
+int maze::gen_exit(const int& ent)
 {
 	int swtch;
 	uniform_int_distribution<int> wall(0, 3);
 
-	do{
+	do
 		swtch = wall(randmaze);
-	}while(swtch == ent);
+	while(swtch == ent);
 
-	create_switch_case(swtch, false);
+	gen_switch_case(swtch, false);
 
 	return 0;
 }
 
-void maze::create_switch_case(const int& swtch, const bool& isEnter)
+void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 {
 	int x, y;
 	uniform_int_distribution<int> block(0, SIZE-1);
@@ -200,43 +199,40 @@ void maze::create_switch_case(const int& swtch, const bool& isEnter)
 		case 0: //left
 			x = 0;
 			y = 0;
-			while(grid[x+1][y].atr != Open){
+			while(grid[x+1][y].atr != Open)
 				y = block(randmaze);
-			}
 			break;
 		case 1: //up
 			x = 0;
 			y = SIZE-1;
-			while(grid[x][y-1].atr != Open){
+			while(grid[x][y-1].atr != Open)
 				x = block(randmaze);
-			}
 			break;
 		case 2: //right
 			x = SIZE-1;
 			y = 0;
-			while(grid[x-1][y].atr != Open){
+			while(grid[x-1][y].atr != Open)
 				y = block(randmaze);
-			}
 			break;
 		case 3:
 			x = 0;
 			y = 0;
-			while(grid[x][y+1].atr != Open){
+			while(grid[x][y+1].atr != Open)
 				x = block(randmaze);
-			}
 			break;
 		default:
-			cout << "create_switch_case failed.\n";
+			cout << "gen_switch_case failed.\n";
 			break;
 	}
-	if(isEnter){
+
+	if(isEnter)
+	{ //this is called in the case of gen_start
 		grid[x][y].atr = Enter;
 		cout << "Enter is: x: " << grid[x][y].x << " y: " << grid[x][y].y << '\n';
 		Start = grid[x][y];
-		/*Start.x = grid[x][y].x;
-		Start.y = grid[x][y].y; */
 	}
-	else{
+	else
+	{ //is exit
 		grid[x][y].atr = Exit;
 		cout << "Exit is: x: " << grid[x][y].x << " y: " << grid[x][y].y << '\n';
 		grid[x][y].gen = Unvisited; //for min_steps
@@ -272,42 +268,44 @@ int maze::min_steps()
 	while(!isFinished){ //Search loop
 		count++; //took one 'step'
 
-		while(!move.empty())
+		while(!move.empty()) //while there are still coords
 		{
-			x = move.top().x; //set
-			y = move.top().y;
+			x = move.top().x; //set x to new coord x
+			y = move.top().y; //set y to new coord y
 
-			if(check_spot(x+1, y)){
+			if(check_spot(x+1, y)) //call check_spot for (x+1, y)
+			{ //if (x+1, y) is open and not visted, push it to our stacks
 				temp.push(grid[x+1][y]);
 				check.push(grid[x+1][y]);
 			}
-			if(check_spot(x-1, y)){
+			if(check_spot(x-1, y)) //call check_spot for (x-1, y)
+			{ //if (x-1, y) is open and not visted, push it to our stacks
 				temp.push(grid[x-1][y]);
 				check.push(grid[x-1][y]);
 			}
-			if(check_spot(x, y+1)){
+			if(check_spot(x, y+1)) //call check_spot for (x, y+1)
+			{ //if (x, y+1) is open and not visted, push it to our stacks
 				temp.push(grid[x][y+1]);
 				check.push(grid[x][y+1]);
 			}
-			if(check_spot(x, y-1)){
+			if(check_spot(x, y-1)) //call check_spot for (x, y-1)
+			{ //if (x, y-1) is open and not visted, push it to our stacks
 				temp.push(grid[x][y-1]);
 				check.push(grid[x][y-1]);
 			}
 
-			move.pop();
+			move.pop(); //remove current coord
 		}
 
-		while(!check.empty())
+		while(!check.empty()) //check all coords
 		{
-			if(check.top() == End)
+			if(check.top() == End) //if one of our next coords is
 				isFinished = true;
 			check.pop();
 		}
 
-		move = temp;
+		move = temp; //next coords are now current coords
 		temp = check; //instead of writing another while loop, = empty stack
-
-		//cout << count << '\n';
 	}
 
 	return count;
@@ -317,9 +315,8 @@ bool maze::check_spot(const int& x, const int& y)
 {
 	bool retvar = true;
 
-	if(grid[x][y].atr != Wall && grid[x][y].gen != Visited){
+	if(grid[x][y].atr != Wall && grid[x][y].gen != Visited)
 		grid[x][y].gen = Visited;
-	}
 	else //if it's a Wall just return false
 		retvar = false;
 
@@ -335,26 +332,26 @@ void maze::print() const
 			switch(grid[x][y].atr)
 			{
 				case -1:
-					cout << "B";
+					cout << "B"; //Start/Beginning
 					break;
 				case 0:
-					cout << "E";
+					cout << "E"; //Exit/End
 					break;
 				case 1:
-					cout << " ";
+					cout << " "; //Open
 					break;
 				case 2:
-					cout << "x";
+					cout << "x"; //Wall
 					break;
 				case 3:
-					cout << "n";
+					cout << "n"; //Invalid (Unassigned)
 					break;
 				default:
-					std::cerr << "ERROR WTF\n";
+					std::cerr << "ERROR\n"; //In case of error
 					break;
 			}
-			cout << " ";
-		}
-		cout << '\n';
-	}
+			cout << " "; //Space to make the formatting look nicer
+		} //end x
+		cout << '\n'; //newline for each new line
+	} //end y
 }

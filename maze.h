@@ -22,14 +22,14 @@ isSeen:
 	true = draw it on the map
 	false = show it as not seen yet
 */
-struct block{
+struct block
+{
 	attribute atr = Unassigned;
 	bool isSeen = false;
 	generation gen = Unvisited;
 	int x, y; //these are for keeping track of the x/y for gen purposes
-	bool operator==(const block& b) const{ //for check_spot()
-		return(this->x == b.x && this->y == b.y && this->atr == b.atr);
-	}
+	bool operator==(const block& b) const //for check_spot()
+	{ return (this->x == b.x && this->y == b.y && this->atr == b.atr); }
 };
 
 class maze
@@ -40,9 +40,9 @@ public:
 	void gen_main();
 	char gen_next(const std::string& dir);
 	void gen_walls();
-	void create_entrance();
-	int create_exit(const int& ent);
-	void create_switch_case(const int& swtch, const bool& isEnter);
+	void gen_start();
+	int gen_exit(const int& ent);
+	void gen_switch_case(const int& swtch, const bool& isEnter);
 	int min_steps();
 	bool check_spot(const int& x, const int& y);
 	void print() const;
