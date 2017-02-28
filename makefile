@@ -12,3 +12,6 @@ main.o : main.cpp maze.h
 
 maze.o : maze.cpp maze.h
 	$(CC) $(CFLAGS) maze.cpp
+
+clean :
+		rm -f *.o *.out
