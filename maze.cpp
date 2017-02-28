@@ -1,8 +1,7 @@
 #include "maze.h" //class def for maze
 #include <iostream> //cout for print()
 #include <random> //uniform_int_distribution
-#include <stack> //stack s for Depth First Searches
-#include <vector> //vector for min_steps
+#include <stack> //stack s for DFS gen and min_steps
 #include "universal.h" //randmaze (random numbers)
 
 using std::cout;
