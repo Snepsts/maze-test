@@ -7,7 +7,7 @@
 using std::cout;
 using std::uniform_int_distribution;
 
-/* default constructor */
+//default constructor
 maze::maze()
 {
 	for(int i = 0; i < SIZE; i++)
@@ -30,16 +30,6 @@ maze::maze()
 			grid[x][y].y = y;
 		}
 	}
-
-/*
-	cout << "TEST: \n";
-	cout << "grid[1][7] = grid[" << grid[1][7].x << "][" << grid[1][7].y << "]\n";
-	cout << "grid[16][16] = grid[" << grid[16][16].x << "][" << grid[16][16].y << "]\n";
-	cout << "grid[9][3] = grid[" << grid[9][3].x << "][" << grid[9][3].y << "]\n";
-	cout << "grid[12][8] = grid[" << grid[12][8].x << "][" << grid[12][8].y << "]\n";
-	cout << "grid[17][5] = grid[" << grid[17][5].x << "][" << grid[17][5].y << "]\n";
-	cout << "grid[5][14] = grid[" << grid[5][14].x << "][" << grid[5][14].y << "]\n";
-*/
 }
 
 void maze::gen_main()
@@ -56,12 +46,15 @@ void maze::gen_main()
 	x = startpt(randmaze); //x = startpt(randmaze);
 	y = startpt(randmaze);
 
+	/* We do the following to confirm x (and y) begins on an odd number. If they
+	do not, our implementation of DFS will not work correctly. We depend on each
+	calculation moving two blocks at a time. If it starts on an even block, the
+	"edge" will be two blocks thick. Making them odd ensures the wall stays one
+	block thick. */
 	if(x % 2 == 0) //if x is even
 		x++;
 	if(y % 2 == 0) //if y is even
 		y++;
-
-	//cout << x << " " << y << '\n';
 
 	grid[x][y].atr = Open;
 	s.push(grid[x][y]);
@@ -73,7 +66,6 @@ void maze::gen_main()
 
 		x = s.top().x;
 		y = s.top().y;
-		//cout << x << " " << y << '\n';
 
 		//check if we can check right
 		if(x < SIZE-2) //if x is at least 2 less than SIZE
@@ -127,6 +119,8 @@ void maze::gen_main()
 				break;
 		}
 	}
+	gen_walls();
+	gen_start();
 }
 
 char maze::gen_next(const std::string& dir)
@@ -135,12 +129,6 @@ char maze::gen_next(const std::string& dir)
 		return ' ';
 
 	uniform_int_distribution<int> letter(0, dir.length()-1);
-/*
-	int x = letter(randmaze);
-	cout << "1st Number: " << x << " out of " << dir.length()-1 << " entries." << '\n';
-
-	return dir[x];
-*/
 
 	return dir[letter(randmaze)];
 }

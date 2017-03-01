@@ -16,9 +16,6 @@ int main()
 	auto duration = duration_cast<microseconds>(t2 - t1).count();
 
 	cout << "Generating a " << SIZE << "x" << SIZE << " maze took " << duration << " microseconds." << '\n';
-	m.gen_walls();
-	m.gen_start();
-	cout << "After entrance generation: \n";
 	m.print();
 	cout << "The minimum steps it will take to complete this maze is: ";
 	cout << m.min_steps() << '\n';
