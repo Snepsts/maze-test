@@ -152,8 +152,7 @@ void maze::gen_start()
 		0 = left
 		1 = up
 		2 = right
-		3 = down
-	*/
+		3 = down */
 	uniform_int_distribution<int> wall(0, 3);
 
 	swtch = wall(randmaze); //we store the value bc we'll use it later
@@ -180,6 +179,9 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 	int x, y;
 	uniform_int_distribution<int> block(0, SIZE-1);
 
+	/* This switch statement looks to see what side of the wall was determined
+	and looks to ensure the block next to the entrance/exit is open. Until it is
+	open, it keeps trying a new random value until it is in a valid spot. */
 	switch(swtch)
 	{
 		case 0: //left
@@ -200,7 +202,7 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 			while(grid[x-1][y].atr != Open)
 				y = block(randmaze);
 			break;
-		case 3:
+		case 3: //down
 			x = 0;
 			y = 0;
 			while(grid[x][y+1].atr != Open)
@@ -260,7 +262,7 @@ int maze::min_steps()
 	bool isFinished = false;
 	std::stack<block> check, move, temp;
 
-	/*The following "if" checks are to keep us from checking parts of the array
+	/* The following "if" checks are to keep us from checking parts of the array
 	that are out of bounds during the first block (start). I'm not sure if it
 	would throw errors or break the compiler but it's a good idea regardless to
 	stay _inside_ the bounds of our arrays :) */
