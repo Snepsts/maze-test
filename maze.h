@@ -119,7 +119,7 @@ private:
 	 *
 	 * Calls gen_switch_case.
 	 */
-	int gen_exit(const int& ent);
+	void gen_exit(const int& ent);
 
 	/* function gen_switch_case
 	 * Called from gen_start and gen_exit

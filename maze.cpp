@@ -162,7 +162,7 @@ void maze::gen_start()
 	gen_exit(swtch);
 }
 
-int maze::gen_exit(const int& ent)
+void maze::gen_exit(const int& ent)
 {
 	int swtch;
 	uniform_int_distribution<int> wall(0, 3);
@@ -173,8 +173,6 @@ int maze::gen_exit(const int& ent)
 
 	gen_switch_case(swtch, false); //set the exit
 	gen_dead_end(); //set our dead ends
-
-	return 0; //why does this return 0?
 }
 
 void maze::gen_switch_case(const int& swtch, const bool& isEnter)
