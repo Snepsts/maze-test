@@ -158,7 +158,7 @@ void maze::gen_start()
 
 	swtch = wall(randmaze); //we store the value bc we'll use it later
 
-	gen_switch_case(swtch, true);
+	gen_switch_case(swtch, true); //set the entrance
 	gen_exit(swtch);
 }
 
@@ -171,9 +171,10 @@ int maze::gen_exit(const int& ent)
 		swtch = wall(randmaze);
 	while(swtch == ent);
 
-	gen_switch_case(swtch, false);
+	gen_switch_case(swtch, false); //set the exit
+	gen_dead_end(); //set our dead ends
 
-	return 0;
+	return 0; //why does this return 0?
 }
 
 void maze::gen_switch_case(const int& swtch, const bool& isEnter)
@@ -225,6 +226,32 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 		grid[x][y].gen = Unvisited; //for min_steps
 		End = grid[x][y];
 	}
+}
+
+void maze::gen_dead_end()
+{
+	for(int y = 1; y < SIZE-1; y++) //y axis staying inside of the boundary
+	{
+		for(int x = 1; x < SIZE-1; x++) //x axis inside of boundary
+		{
+			if(grid[x][y].atr == Open)
+			{
+				int counter = 0; //count the walls surrounding our block
+
+				if(grid[x+1][y].atr == Wall) //check right
+					counter++;
+				if(grid[x-1][y].atr == Wall) //check left
+					counter++;
+				if(grid[x][y+1].atr == Wall) //check up
+					counter++;
+				if(grid[x][y-1].atr == Wall) //check down
+					counter++;
+
+				if(counter == 3) //if three of four are walls, it's a dead end
+					grid[x][y].isDeadEnd = true; //set the dead end
+			} //end if != Wall
+		} //end x
+	} //end y
 }
 
 int maze::min_steps()
@@ -325,7 +352,10 @@ void maze::print() const
 					cout << "E"; //Exit/End
 					break;
 				case 1:
-					cout << " "; //Open
+					if(grid[x][y].isDeadEnd) //check for a dead end
+						cout << "d"; //Dead End
+					else
+						cout << " "; //Open
 					break;
 				case 2:
 					cout << "x"; //Wall

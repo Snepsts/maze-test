@@ -15,17 +15,24 @@ enum generation {Unvisited = 0, Visited = 1};
  *   1 = open
  *   2 = wall
  *   3 = unassigned (there should be 0 of these when the maze is fully generated)
+ * isSeen:
+ *   true = draw it on the map
+ *   false = draw it as unknown (it isn't seen yet)
+ * isDeadEnd:
+ *   true = trigger for greater probability of hard monster/good loot
+ *   false = gen normally
  * generation gen: //only for maze generation purposes
  *   0 = unvisited
  *   1 = visited
- * isSeen:
- *   true = draw it on the map
- *   false = show it as not seen yet
+ * int x and y:
+ *   x = keeping track of the x axis position
+ *   y = keeping track of the y axis position
  */
 struct block
 {
 	attribute atr = Unassigned;
 	bool isSeen = false;
+	bool isDeadEnd = false;
 	generation gen = Unvisited;
 	int x, y; //these are for keeping track of the x/y for gen purposes
 	bool operator==(const block& b) const //for check_spot()
@@ -124,6 +131,17 @@ private:
 	 * the bool determines whether gen_start called it or gen_exit called it.
 	 */
 	void gen_switch_case(const int& swtch, const bool& isEnter);
+
+	/* function gen_dead_end
+	 * Only called from gen_exit.
+	 *
+	 * This function allows us to keep track of which block is and isn't a dead
+	 * end. Instead of running a check each time, we do it once during
+	 * generation and keep tabs on the blocks that are dead ends. This is useful
+	 * for possible uses that want to have dead ends be something more than just
+	 * a frustration.
+	 */
+	void gen_dead_end();
 
 	/* function check_spot
 	 * Called from min_steps multiple times each iteration of it's loop.
