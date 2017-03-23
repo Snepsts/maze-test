@@ -77,36 +77,10 @@ void maze::gen_main()
 
 	while(!s.empty())
 	{
-		std::string dir;
-		dir.clear();
-
 		x = s.top().x;
 		y = s.top().y;
 
-		//check if we can check right
-		if(x < SIZE-2) //if x is at least 2 less than SIZE
-		{ //check right
-			if(grid[x+1][y].atr == Unassigned && grid[x+2][y].atr == Unassigned)
-				dir += "r";
-		}
-		//check if we can check up
-		if(y < SIZE-2) //if y is at least 2 less than the SIZE
-		{ //check up
-			if(grid[x][y+1].atr == Unassigned && grid[x][y+2].atr == Unassigned)
-				dir += "u";
-		}
-		//check if we can check left
-		if(x > 1) //if x is at least 2
-		{ //check left
-			if(grid[x-1][y].atr == Unassigned && grid[x-2][y].atr == Unassigned)
-				dir += "l";
-		}
-		//check if we can check up
-		if(y > 1) //if y is at least 2
-		{ //check up
-			if(grid[x][y-1].atr == Unassigned && grid[x][y-2].atr == Unassigned)
-				dir += "d";
-		}
+		std::string dir = getDirections(x, y, true); //get all avail. directions
 
 		switch(gen_next(dir))
 		{
@@ -137,6 +111,90 @@ void maze::gen_main()
 	}
 	gen_walls();
 	gen_start();
+}
+
+//FOR COMMIT MSG:
+/*
+Move the string creation logic of gen_main to it's own function to accomodate
+the check for "where are the available areas to move?" question the "character"
+will need to inevitably ask.
+*/
+
+/* getDirections
+This function may look a little confusing. Here's the basics:
+ - If isGen is true, we do a DFS check (check the next two blocks) to see if the
+   blocks in question have been assigned an attribute yet.
+ - If isGen is false, we do a basic check (only the next block) to see if the
+   block is open or the exit.
+
+Regardless of isGen's state, if the evaluation is true, we add the char
+representing a direction to the string that we're returning. d is down, l is
+left, and yeah you get the point. This string gets returned and is dealt with
+accordingly.
+*/
+std::string maze::getDirections(const int& x, const int& y, bool isGen) const
+{
+	std::string dir;
+	dir.clear(); //ensure the string is empty before starting
+
+	//check if we can check right
+	if(x < SIZE-2) //if x is at least 2 less than SIZE
+	{ //check right
+		if(isGen) //if the function was called from gen_main
+		{
+			if(grid[x+1][y].atr == Unassigned && grid[x+2][y].atr == Unassigned)
+				dir += "r";
+		}
+		else //other purposes
+		{
+			if(grid[x+1][y].atr == Open || grid[x+1][y].atr == Exit)
+				dir += "r";
+		}
+	}
+	//check if we can check up
+	if(y < SIZE-2) //if y is at least 2 less than the SIZE
+	{ //check up
+		if(isGen) //if the function was called from gen_main
+		{
+			if(grid[x][y+1].atr == Unassigned && grid[x][y+2].atr == Unassigned)
+				dir += "u";
+		}
+		else //other purposes
+		{
+			if(grid[x][y+1].atr == Open || grid[x][y+1].atr == Exit)
+				dir += "u";
+		}
+	}
+	//check if we can check left
+	if(x > 1) //if x is at least 2
+	{ //check left
+		if(isGen) //if the function was called from gen_main
+		{
+			if(grid[x-1][y].atr == Unassigned && grid[x-2][y].atr == Unassigned)
+				dir += "l";
+		}
+		else //other purposes
+		{
+			if(grid[x-1][y].atr == Open || grid[x-1][y].atr == Exit)
+				dir += "l";
+		}
+	}
+	//check if we can check up
+	if(y > 1) //if y is at least 2
+	{ //check up
+		if(isGen) //if the function was called from gen_main
+		{
+			if(grid[x][y-1].atr == Unassigned && grid[x][y-2].atr == Unassigned)
+				dir += "d";
+		}
+		else //other purposes
+		{
+			if(grid[x][y-1].atr == Open || grid[x][y-1].atr == Exit)
+				dir += "d";
+		}
+	}
+
+	return dir; //return string
 }
 
 char maze::gen_next(const std::string& dir)
@@ -234,6 +292,9 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 		grid[x][y].atr = Enter;
 		cout << "Enter is: x: " << grid[x][y].x << " y: " << grid[x][y].y << '\n';
 		Start = grid[x][y];
+
+		cx = x; cy = y; //set the "character"'s (x, y)
+		grid[x][y].hasPlayer = true; //and set the player
 	}
 	else
 	{ //is exit
@@ -362,13 +423,21 @@ void maze::print() const
 			switch(grid[x][y].atr)
 			{
 				case -1:
-					cout << "B"; //Start/Beginning
+					if(grid[x][y].hasPlayer) //check for a player
+						cout << "P"; //Player
+					else
+						cout << "B"; //Start/Beginning
 					break;
 				case 0:
-					cout << "E"; //Exit/End
+					if(grid[x][y].hasPlayer) //check for a player
+						cout << "P"; //Player
+					else
+						cout << "E"; //Exit/End
 					break;
 				case 1:
-					if(grid[x][y].isDeadEnd) //check for a dead end
+					if(grid[x][y].hasPlayer) //check for a player
+						cout << "P"; //Player
+					else if(grid[x][y].isDeadEnd) //check for a dead end
 						cout << "d"; //Dead End
 					else
 						cout << " "; //Open
@@ -387,4 +456,11 @@ void maze::print() const
 		} //end x
 		cout << '\n'; //newline for each new line
 	} //end y
+}
+
+void maze::move(const int& x, const int& y)
+{
+	grid[cx][cy].hasPlayer = false; //leave this block
+	grid[x][y].hasPlayer = true; //enter this block
+	cx = x; cy = y; //set our x and y coords accordingly
 }

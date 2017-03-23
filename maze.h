@@ -43,6 +43,9 @@ enum generation {Unvisited = 0, Visited = 1};
  * int x and y:
  *   x = keeping track of the x axis position
  *   y = keeping track of the y axis position
+ * hasPlayer:
+ *   true = the player is currently in this part of the maze
+ *   false = the player is not in this part of the maze
  */
 struct block
 {
@@ -51,6 +54,7 @@ struct block
 	bool isDeadEnd = false;
 	generation gen = Unvisited;
 	int x, y; //these are for keeping track of the x/y for gen purposes
+	bool hasPlayer = false;
 	bool operator==(const block& b) const //for check_spot()
 	{ return (this->x == b.x && this->y == b.y && this->atr == b.atr); }
 };
@@ -71,10 +75,30 @@ public:
 	/* function gen_main
 	 * Upon calling this the maze generation is started.
 	 *
+	 * Calls getDirections each iteration of its loop.
 	 * Calls gen_next each iteration of its loop.
 	 * Calls gen_walls and gen_start upon completion.
 	 */
 	void gen_main();
+
+	/* function getDirections
+	 * Called by gen_main and also whenever we need to see where the "character"
+	 * can move.
+	 *
+	 * Takes an x and a y, and checks the adjacent blocks (assuming they're IN
+	 * the array) to see if they're open. If they are open, it adds chars to
+	 * represent open directions (u for up, d for down, r for right, and l for
+ 	 * left) to a string.
+	 *
+	 * Also takes a bool "isGen" to see if it was called from gen_main or not.
+	 * This defaults to false so you don't have to worry about passing a bool.
+	 * The purpose of this bool is if it's called for generation purposes, we
+	 * need to check for two "Unassigned"s, otherwise we're looking for "Open"
+	 * blocks.
+	 *
+	 * It returns said string containing all available directions.
+	 */
+	std::string getDirections(const int& x, const int& y, bool isGen = false) const;
 
 	/* function min_steps
 	 * Runs through the maze until the end is reached. Then returns the amount
@@ -96,6 +120,21 @@ public:
 	 * Prints out the maze to the command line.
 	 */
 	void print() const;
+
+	/* function move
+	 * Called whenever needed.
+	 *
+	 * Takes the x and y the "character" is moving to and puts them there. It
+	 * sets the current "hasPlayer" to "false" and the new (x,y) coord area to
+	 * "true".
+	 */
+	void move(const int& x, const int& y);
+
+	//accessor for the "character"'s x position
+	int getX() const { return cx; }
+
+	//accessor for the "character"'s y position
+	int getY() const { return cy; }
 
 private:
 	//Methods:
@@ -180,6 +219,7 @@ private:
 	//Members:
 	block grid[SIZE][SIZE];
 	block Start, End; //capitalize bc end all lowers throws an error
+	int cx, cy; //current "character" position x and y
 };
 
 #endif //__MAZE_H__
