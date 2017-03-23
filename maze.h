@@ -44,8 +44,8 @@ enum generation {Unvisited = 0, Visited = 1};
  *   x = keeping track of the x axis position
  *   y = keeping track of the y axis position
  * hasPlayer:
- *   true = the player is currently in this part of the maze
- *   false = the player is not in this part of the maze
+ *   true = the player is currently in this block of the maze
+ *   false = the player is not in this block of the maze
  */
 struct block
 {

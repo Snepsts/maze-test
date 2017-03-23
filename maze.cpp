@@ -113,13 +113,6 @@ void maze::gen_main()
 	gen_start();
 }
 
-//FOR COMMIT MSG:
-/*
-Move the string creation logic of gen_main to it's own function to accomodate
-the check for "where are the available areas to move?" question the "character"
-will need to inevitably ask.
-*/
-
 /* getDirections
 This function may look a little confusing. Here's the basics:
  - If isGen is true, we do a DFS check (check the next two blocks) to see if the
