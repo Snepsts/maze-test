@@ -453,7 +453,10 @@ void maze::print() const
 
 void maze::move(const int& x, const int& y)
 {
-	grid[cx][cy].hasPlayer = false; //leave this block
-	grid[x][y].hasPlayer = true; //enter this block
-	cx = x; cy = y; //set our x and y coords accordingly
+	if(grid[x][y].atr != Wall) //check whether or not it's a wall
+	{
+		grid[cx][cy].hasPlayer = false; //leave this block
+		grid[x][y].hasPlayer = true; //enter this block
+		cx = x; cy = y; //set our x and y coords accordingly
+	}
 }
