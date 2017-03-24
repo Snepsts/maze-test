@@ -45,6 +45,7 @@ int main()
 
 	//part 2, testing the maze itself
 	bool whilevar = true;
+	bool completed = true;
 	int choicevar, x, y;
 
 	cout << "Welcome to the maze tester.\n";
@@ -61,22 +62,30 @@ int main()
 		switch (choicevar)
 		{
 			case 0: //right
-				m.move(x+1, y);
+				if(m.move(x+1, y) == 2) //check if the maze is completed
+					whilevar = false;
 				break;
 			case 1: //up
-				m.move(x, y+1);
+				if(m.move(x, y+1) == 2) //check if the maze is completed
+					whilevar = false;
 				break;
 			case 2: //down
-				m.move(x, y-1);
+				if(m.move(x, y-1) == 2)
+					whilevar = false;
 				break;
 			case 3: //left
-				m.move(x-1, y);
+				if(m.move(x-1, y) == 2) //check if the maze is completed
+					whilevar = false;
 				break;
 			default: //otherwise, end
 				whilevar = false;
+				completed = false;
 				break;
 		}
 	} while(whilevar);
+
+	if(completed)
+		cout << "Congrats! You have completed the maze!!!\n";
 
 	return 0;
 }

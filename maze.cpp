@@ -26,12 +26,15 @@ using std::uniform_int_distribution;
 //default constructor
 maze::maze()
 {
+	//set the borders
 	for(int i = 0; i < SIZE; i++)
 	{
+		//set to walls
 		grid[0][i].atr = Wall;
 		grid[SIZE-1][i].atr = Wall;
 		grid[i][0].atr = Wall;
 		grid[i][SIZE-1].atr = Wall;
+		//set to visited for min_steps
 		grid[0][i].gen = Visited;
 		grid[SIZE-1][i].gen = Visited;
 		grid[i][0].gen = Visited;
@@ -131,7 +134,7 @@ std::string maze::getDirections(const int& x, const int& y, bool isGen) const
 	dir.clear(); //ensure the string is empty before starting
 
 	//check if we can check right
-	if(x < SIZE-2) //if x is at least 2 less than SIZE
+	if(x < SIZE-1) //if x is at least 1 less than SIZE
 	{ //check right
 		if(isGen) //if the function was called from gen_main
 		{
@@ -145,7 +148,7 @@ std::string maze::getDirections(const int& x, const int& y, bool isGen) const
 		}
 	}
 	//check if we can check up
-	if(y < SIZE-2) //if y is at least 2 less than the SIZE
+	if(y < SIZE-1) //if y is at least 1 less than the SIZE
 	{ //check up
 		if(isGen) //if the function was called from gen_main
 		{
@@ -159,7 +162,7 @@ std::string maze::getDirections(const int& x, const int& y, bool isGen) const
 		}
 	}
 	//check if we can check left
-	if(x > 1) //if x is at least 2
+	if(x > 0) //if x is at least 1
 	{ //check left
 		if(isGen) //if the function was called from gen_main
 		{
@@ -173,7 +176,7 @@ std::string maze::getDirections(const int& x, const int& y, bool isGen) const
 		}
 	}
 	//check if we can check up
-	if(y > 1) //if y is at least 2
+	if(y > 0) //if y is at least 1
 	{ //check up
 		if(isGen) //if the function was called from gen_main
 		{
@@ -239,6 +242,7 @@ void maze::gen_exit(const int& ent)
 
 	gen_switch_case(swtch, false); //set the exit
 	gen_dead_end(); //set our dead ends
+	gen_finish();
 }
 
 void maze::gen_switch_case(const int& swtch, const bool& isEnter)
@@ -285,9 +289,6 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 		grid[x][y].atr = Enter;
 		cout << "Enter is: x: " << grid[x][y].x << " y: " << grid[x][y].y << '\n';
 		Start = grid[x][y];
-
-		cx = x; cy = y; //set the "character"'s (x, y)
-		grid[x][y].hasPlayer = true; //and set the player
 	}
 	else
 	{ //is exit
@@ -413,50 +414,122 @@ void maze::print() const
 	{
 		for(int x = 0; x < SIZE; x++) //x axis
 		{
-			switch(grid[x][y].atr)
+			if(!grid[x][y].isSeen) //if it hasn't been seen yet
+				cout << "m"; //for mystery ooOOOoOOoOOOOOo spooky
+			else //otherwise it's been seen so we can draw it
 			{
-				case -1:
-					if(grid[x][y].hasPlayer) //check for a player
-						cout << "P"; //Player
-					else
-						cout << "B"; //Start/Beginning
-					break;
-				case 0:
-					if(grid[x][y].hasPlayer) //check for a player
-						cout << "P"; //Player
-					else
-						cout << "E"; //Exit/End
-					break;
-				case 1:
-					if(grid[x][y].hasPlayer) //check for a player
-						cout << "P"; //Player
-					else if(grid[x][y].isDeadEnd) //check for a dead end
-						cout << "d"; //Dead End
-					else
-						cout << " "; //Open
-					break;
-				case 2:
-					cout << "x"; //Wall
-					break;
-				case 3:
-					cout << "n"; //Invalid (Unassigned)
-					break;
-				default:
-					std::cerr << "ERROR\n"; //In case of error
-					break;
-			}
+				switch(grid[x][y].atr)
+				{
+					case -1:
+						if(grid[x][y].hasPlayer) //check for a player
+							cout << "P"; //Player
+						else
+							cout << "B"; //Start/Beginning
+						break;
+					case 0:
+						if(grid[x][y].hasPlayer) //check for a player
+							cout << "P"; //Player
+						else
+							cout << "E"; //Exit/End
+						break;
+					case 1:
+						if(grid[x][y].hasPlayer) //check for a player
+							cout << "P"; //Player
+						else if(grid[x][y].isDeadEnd) //check for a dead end
+							cout << "d"; //Dead End
+						else
+							cout << " "; //Open
+						break;
+					case 2:
+						cout << "x"; //Wall
+						break;
+					case 3:
+						cout << "n"; //Invalid (Unassigned)
+						break;
+					default:
+						std::cerr << "ERROR\n"; //In case of error
+						break;
+				} //end switch
+			} //end else
 			cout << " "; //Space to make the formatting look nicer
 		} //end x
 		cout << '\n'; //newline for each new line
 	} //end y
 }
 
-void maze::move(const int& x, const int& y)
+int maze::move(const int& x, const int& y)
 {
-	if(grid[x][y].atr != Wall) //check whether or not it's a wall
+	if(grid[x][y].atr == Exit)
 	{
 		grid[cx][cy].hasPlayer = false; //leave this block
 		grid[x][y].hasPlayer = true; //enter this block
+
 		cx = x; cy = y; //set our x and y coords accordingly
+
+		return 2; //return finished with maze
+	}
+	else if(grid[x][y].atr != Wall) //check whether or not it's a wall
+	{
+		grid[cx][cy].hasPlayer = false; //leave this block
+		grid[x][y].hasPlayer = true; //enter this block
+
+		grid[x+1][y].isSeen = true; grid[x-1][y].isSeen = true; //set all blocks
+		grid[x][y+1].isSeen = true; grid[x][y-1].isSeen = true; //around this
+		grid[x+1][y+1].isSeen = true; grid[x+1][y-1].isSeen = true; //block to
+		grid[x-1][y+1].isSeen = true; grid[x-1][y-1].isSeen = true; //be seen
+
+		cx = x; cy = y; //set our x and y coords accordingly
+
+		return 1; //return successful move
+	}
+	else
+		return 0; //return unsuccessful move
+}
+
+void maze::gen_finish()
+{
+	//work from the "start" block
+	int x = Start.x;
+	int y = Start.y;
+
+	cx = x; cy = y; //set the "character"'s (x, y)
+	grid[x][y].hasPlayer = true; //and set the player
+	grid[x][y].isSeen = true; //set the enter point to seen
+
+	if(x == 0) //if it starts on the left
+	{
+		grid[x][y+1].isSeen = true; //block above
+		grid[x][y-1].isSeen = true; //block below
+		grid[x+1][y].isSeen = true; //block to the right
+		grid[x+1][y+1].isSeen = true; //right + up
+		grid[x+1][y-1].isSeen = true; //right + down
+	}
+	else if(x == SIZE-1) //if it starts on the right
+	{
+		grid[x][y+1].isSeen = true; //block above
+		grid[x][y-1].isSeen = true; //block below
+		grid[x-1][y].isSeen = true; //block to the left
+		grid[x-1][y+1].isSeen = true; //left + up
+		grid[x-1][y-1].isSeen = true; //left + down
+	}
+	else if(y == 0) //if it starts on the bottom
+	{
+		grid[x+1][y].isSeen = true; //block to the right
+		grid[x-1][y].isSeen = true; //block to the left
+		grid[x][y+1].isSeen = true; //block above
+		grid[x+1][y+1].isSeen = true; //up + right
+		grid[x-1][y+1].isSeen = true; //up + left
+	}
+	else if(y == SIZE-1) //if it starts on the top
+	{
+		grid[x+1][y].isSeen = true; //block to the right
+		grid[x-1][y].isSeen = true; //block to the left
+		grid[x][y+1].isSeen = true; //block below
+		grid[x+1][y+1].isSeen = true; //down + right
+		grid[x-1][y+1].isSeen = true; //down + left
+	}
+	else //error
+	{
+		cout << "ERROR in gen_finish, cannot determine maze start position.\n";
 	}
 }

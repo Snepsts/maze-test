@@ -126,9 +126,12 @@ public:
 	 *
 	 * Takes the x and y the "character" is moving to and puts them there. It
 	 * sets the current "hasPlayer" to "false" and the new (x,y) coord area to
-	 * "true".
+	 * "true". If the area is a wall it will not move them there.
+	 *
+	 * Returns an int, 0 for unsuccessful move, 1 for successful move, and 2 to
+	 * indicate the maze has been completed
 	 */
-	void move(const int& x, const int& y);
+	int move(const int& x, const int& y);
 
 	//accessor for the "character"'s x position
 	int getX() const { return cx; }
@@ -215,6 +218,18 @@ private:
 	 * function returns true.
 	 */
 	bool check_spot(const int& x, const int& y);
+
+	/* function gen_finish
+	 * Called from gen_exit as the last function called in the generation
+	 * process.
+	 *
+	 * The purpose of this function is to accomplish any tasks necessary for
+	 * polishing the maze for the user. This includes: Setting the initial
+	 * "isSeen" values, allowing the player to see initially. Placing the
+	 * "character" in the start block (hasPlayer = true) and the cx/cy values.
+	 * As new stuff gets added, this will be amended.
+	 */
+	void gen_finish();
 
 	//Members:
 	block grid[SIZE][SIZE];
