@@ -121,6 +121,16 @@ public:
 	 */
 	void print() const;
 
+	/* function toString
+	 * Called whenever needed.
+	 *
+	 * If there's one thing I like about Java classes, it's toString functions.
+	 *
+	 * Accomplishes the same thing as print, but instead of putting it to a
+	 * console, it puts it into a string for any other use you may have.
+	 */
+	std::string toString() const;
+
 	/* function move
 	 * Called whenever needed.
 	 *

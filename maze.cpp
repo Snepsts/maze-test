@@ -457,6 +457,59 @@ void maze::print() const
 	} //end y
 }
 
+std::string toString() const
+{
+	string r = ""; //string to be returned
+
+	for(int y = SIZE-1; y >= 0; y--) //y axis, inverted so (0,0) is bot left
+	{
+		for(int x = 0; x < SIZE; x++) //x axis
+		{
+			if(!grid[x][y].isSeen) //if it hasn't been seen yet
+				r += "m"; //for mystery ooOOOoOOoOOOOOo spooky
+			else //otherwise it's been seen so we can draw it
+			{
+				switch(grid[x][y].atr)
+				{
+					case -1:
+						if(grid[x][y].hasPlayer) //check for a player
+							r += "P"; //Player
+						else
+							r += "B"; //Start/Beginning
+						break;
+					case 0:
+						if(grid[x][y].hasPlayer) //check for a player
+							r += "P"; //Player
+						else
+							r += "E"; //Exit/End
+						break;
+					case 1:
+						if(grid[x][y].hasPlayer) //check for a player
+							r += "P"; //Player
+						else if(grid[x][y].isDeadEnd) //check for a dead end
+							r += "d"; //Dead End
+						else
+							r += " "; //Open
+						break;
+					case 2:
+						r += "x"; //Wall
+						break;
+					case 3:
+						r += "n"; //Invalid (Unassigned)
+						break;
+					default:
+						r += "ERROR\n"; //In case of error
+						break;
+				} //end switch
+			} //end else
+			r += " "; //Space to make the formatting look nicer
+		} //end x
+		r += '\n'; //newline for each new line
+	} //end y
+
+	return r;
+}
+
 int maze::move(const int& x, const int& y)
 {
 	if(grid[x][y].atr == Exit)
