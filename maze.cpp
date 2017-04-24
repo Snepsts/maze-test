@@ -457,9 +457,9 @@ void maze::print() const
 	} //end y
 }
 
-std::string toString() const
+std::string maze::toString() const
 {
-	string r = ""; //string to be returned
+	std::string r = ""; //string to be returned
 
 	for(int y = SIZE-1; y >= 0; y--) //y axis, inverted so (0,0) is bot left
 	{
