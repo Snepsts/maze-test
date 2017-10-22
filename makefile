@@ -1,8 +1,9 @@
 OBJS = main.o maze.o
 CC = g++ -std=c++11
 DEBUG = -g
-CFLAGS = -Wall -c $(DEBUG)
-LFLAGS = -Wall $(DEBUG)
+OPTI = -O2
+CFLAGS = -Wall -c $(DEBUG) $(OPTI)
+LFLAGS = -Wall $(DEBUG) $(OPTI)
 
 maze : $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o maze.out
