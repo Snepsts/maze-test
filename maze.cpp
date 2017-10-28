@@ -281,6 +281,7 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 			break;
 		default:
 			cout << "gen_switch_case failed.\n";
+			exit(1); //stop
 			break;
 	}
 
