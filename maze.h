@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 #include <string>
 
-const int SIZE = 21;
+const int SIZE = 11;
 
 enum attribute {Enter = -1, Exit = 0, Open = 1, Wall = 2, Unassigned = 3};
 enum generation {Unvisited = 0, Visited = 1};
