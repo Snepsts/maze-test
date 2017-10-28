@@ -577,9 +577,9 @@ void maze::gen_finish()
 	{
 		grid[x+1][y].isSeen = true; //block to the right
 		grid[x-1][y].isSeen = true; //block to the left
-		grid[x][y+1].isSeen = true; //block below
-		grid[x+1][y+1].isSeen = true; //down + right
-		grid[x-1][y+1].isSeen = true; //down + left
+		grid[x][y-1].isSeen = true; //block below
+		grid[x+1][y-1].isSeen = true; //down + right
+		grid[x-1][y-1].isSeen = true; //down + left
 	}
 	else //error
 	{
