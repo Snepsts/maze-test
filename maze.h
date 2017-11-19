@@ -31,10 +31,10 @@ enum generation {Unvisited = 0, Visited = 1};
  *   1 = open
  *   2 = wall
  *   3 = unassigned (there should be 0 of these when the maze is fully generated)
- * isSeen:
+ * is_seen:
  *   true = draw it on the map
  *   false = draw it as unknown (it isn't seen yet)
- * isDeadEnd:
+ * is_deadend:
  *   true = trigger for greater probability of hard monster/good loot
  *   false = gen normally
  * generation gen: //only for maze generation purposes
@@ -43,18 +43,18 @@ enum generation {Unvisited = 0, Visited = 1};
  * int x and y:
  *   x = keeping track of the x axis position
  *   y = keeping track of the y axis position
- * hasPlayer:
+ * has_player:
  *   true = the player is currently in this block of the maze
  *   false = the player is not in this block of the maze
  */
 struct block
 {
 	attribute atr = Unassigned;
-	bool isSeen = false;
-	bool isDeadEnd = false;
+	bool is_seen = false;
+	bool is_deadend = false;
 	generation gen = Unvisited;
 	int x, y; //these are for keeping track of the x/y for gen purposes
-	bool hasPlayer = false;
+	bool has_player = false;
 	bool operator==(const block& b) const //for check_spot()
 	{ return (this->x == b.x && this->y == b.y && this->atr == b.atr); }
 };
@@ -75,13 +75,13 @@ public:
 	/* function gen_main
 	 * Upon calling this the maze generation is started.
 	 *
-	 * Calls getDirections each iteration of its loop.
+	 * Calls get_directions each iteration of its loop.
 	 * Calls gen_next each iteration of its loop.
 	 * Calls gen_walls and gen_start upon completion.
 	 */
 	void gen_main();
 
-	/* function getDirections
+	/* function get_directions
 	 * Called by gen_main and also whenever we need to see where the "character"
 	 * can move.
 	 *
@@ -98,7 +98,7 @@ public:
 	 *
 	 * It returns said string containing all available directions.
 	 */
-	std::string getDirections(const int& x, const int& y, bool isGen = false) const;
+	std::string get_directions(const int& x, const int& y, bool isGen = false) const;
 
 	/* function min_steps
 	 * Runs through the maze until the end is reached. Then returns the amount
@@ -121,21 +121,22 @@ public:
 	 */
 	void print() const;
 
-	/* function toString
+	/* function to_string
 	 * Called whenever needed.
 	 *
 	 * If there's one thing I like about Java classes, it's toString functions.
+	 * However, we're making it to_string because I like my snake case in C/C++.
 	 *
 	 * Accomplishes the same thing as print, but instead of putting it to a
 	 * console, it puts it into a string for any other use you may have.
 	 */
-	std::string toString() const;
+	std::string to_string() const;
 
 	/* function move
 	 * Called whenever needed.
 	 *
 	 * Takes the x and y the "character" is moving to and puts them there. It
-	 * sets the current "hasPlayer" to "false" and the new (x,y) coord area to
+	 * sets the current "has_player" to "false" and the new (x,y) coord area to
 	 * "true". If the area is a wall it will not move them there.
 	 *
 	 * Returns an int, 0 for unsuccessful move, 1 for successful move, and 2 to
@@ -144,10 +145,10 @@ public:
 	int move(const int& x, const int& y);
 
 	//accessor for the "character"'s x position
-	int getX() const { return cx; }
+	int get_x() const { return cx; }
 
 	//accessor for the "character"'s y position
-	int getY() const { return cy; }
+	int get_y() const { return cy; }
 
 private:
 	//Methods:
@@ -235,8 +236,8 @@ private:
 	 *
 	 * The purpose of this function is to accomplish any tasks necessary for
 	 * polishing the maze for the user. This includes: Setting the initial
-	 * "isSeen" values, allowing the player to see initially. Placing the
-	 * "character" in the start block (hasPlayer = true) and the cx/cy values.
+	 * "is_seen" values, allowing the player to see initially. Placing the
+	 * "character" in the start block (has_player = true) and the cx/cy values.
 	 * As new stuff gets added, this will be amended.
 	 */
 	void gen_finish();

@@ -54,8 +54,8 @@ int main()
 	{
 		m.print();
 
-		x = m.getX();
-		y = m.getY();
+		x = m.get_x();
+		y = m.get_y();
 		print_choices(m, x, y);
 
 		cin >> choicevar;
@@ -93,7 +93,7 @@ int main()
 void print_choices(const maze& m, const int& x, const int& y)
 {
 	//since we're using namespace std we don't need the std:: on size_t & string
-	string dir = m.getDirections(x, y); //get the avail. directions
+	string dir = m.get_directions(x, y); //get the avail. directions
 	size_t f; //for checking if the string contains a char
 
 	f = dir.find('r'); //check for right

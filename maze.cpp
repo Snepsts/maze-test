@@ -83,7 +83,7 @@ void maze::gen_main()
 		x = s.top().x;
 		y = s.top().y;
 
-		std::string dir = getDirections(x, y, true); //get all avail. directions
+		std::string dir = get_directions(x, y, true); //get all avail. directions
 
 		switch(gen_next(dir))
 		{
@@ -116,7 +116,7 @@ void maze::gen_main()
 	gen_start();
 }
 
-/* getDirections
+/* get_directions
 This function may look a little confusing. Here's the basics:
  - If isGen is true, we do a DFS check (check the next two blocks) to see if the
    blocks in question have been assigned an attribute yet.
@@ -128,7 +128,7 @@ representing a direction to the string that we're returning. d is down, l is
 left, and yeah you get the point. This string gets returned and is dealt with
 accordingly.
 */
-std::string maze::getDirections(const int& x, const int& y, bool isGen) const
+std::string maze::get_directions(const int& x, const int& y, bool isGen) const
 {
 	std::string dir;
 	dir.clear(); //ensure the string is empty before starting
@@ -320,7 +320,7 @@ void maze::gen_dead_end()
 					counter++;
 
 				if(counter == 3) //if three of four are walls, it's a dead end
-					grid[x][y].isDeadEnd = true; //set the dead end
+					grid[x][y].is_deadend = true; //set the dead end
 			} //end if != Wall
 		} //end x
 	} //end y
@@ -415,28 +415,28 @@ void maze::print() const
 	{
 		for(int x = 0; x < SIZE; x++) //x axis
 		{
-			if(!grid[x][y].isSeen) //if it hasn't been seen yet
+			if(!grid[x][y].is_seen) //if it hasn't been seen yet
 				cout << "m"; //for mystery ooOOOoOOoOOOOOo spooky
 			else //otherwise it's been seen so we can draw it
 			{
 				switch(grid[x][y].atr)
 				{
 					case -1:
-						if(grid[x][y].hasPlayer) //check for a player
+						if(grid[x][y].has_player) //check for a player
 							cout << "P"; //Player
 						else
 							cout << "B"; //Start/Beginning
 						break;
 					case 0:
-						if(grid[x][y].hasPlayer) //check for a player
+						if(grid[x][y].has_player) //check for a player
 							cout << "P"; //Player
 						else
 							cout << "E"; //Exit/End
 						break;
 					case 1:
-						if(grid[x][y].hasPlayer) //check for a player
+						if(grid[x][y].has_player) //check for a player
 							cout << "P"; //Player
-						else if(grid[x][y].isDeadEnd) //check for a dead end
+						else if(grid[x][y].is_deadend) //check for a dead end
 							cout << "d"; //Dead End
 						else
 							cout << " "; //Open
@@ -458,7 +458,7 @@ void maze::print() const
 	} //end y
 }
 
-std::string maze::toString() const
+std::string maze::to_string() const
 {
 	std::string r = ""; //string to be returned
 
@@ -466,28 +466,28 @@ std::string maze::toString() const
 	{
 		for(int x = 0; x < SIZE; x++) //x axis
 		{
-			if(!grid[x][y].isSeen) //if it hasn't been seen yet
+			if(!grid[x][y].is_seen) //if it hasn't been seen yet
 				r += "m"; //for mystery ooOOOoOOoOOOOOo spooky
 			else //otherwise it's been seen so we can draw it
 			{
 				switch(grid[x][y].atr)
 				{
 					case -1:
-						if(grid[x][y].hasPlayer) //check for a player
+						if(grid[x][y].has_player) //check for a player
 							r += "P"; //Player
 						else
 							r += "B"; //Start/Beginning
 						break;
 					case 0:
-						if(grid[x][y].hasPlayer) //check for a player
+						if(grid[x][y].has_player) //check for a player
 							r += "P"; //Player
 						else
 							r += "E"; //Exit/End
 						break;
 					case 1:
-						if(grid[x][y].hasPlayer) //check for a player
+						if(grid[x][y].has_player) //check for a player
 							r += "P"; //Player
-						else if(grid[x][y].isDeadEnd) //check for a dead end
+						else if(grid[x][y].is_deadend) //check for a dead end
 							r += "d"; //Dead End
 						else
 							r += " "; //Open
@@ -515,8 +515,8 @@ int maze::move(const int& x, const int& y)
 {
 	if(grid[x][y].atr == Exit)
 	{
-		grid[cx][cy].hasPlayer = false; //leave this block
-		grid[x][y].hasPlayer = true; //enter this block
+		grid[cx][cy].has_player = false; //leave this block
+		grid[x][y].has_player = true; //enter this block
 
 		cx = x; cy = y; //set our x and y coords accordingly
 
@@ -524,13 +524,13 @@ int maze::move(const int& x, const int& y)
 	}
 	else if(grid[x][y].atr != Wall) //check whether or not it's a wall
 	{
-		grid[cx][cy].hasPlayer = false; //leave this block
-		grid[x][y].hasPlayer = true; //enter this block
+		grid[cx][cy].has_player = false; //leave this block
+		grid[x][y].has_player = true; //enter this block
 
-		grid[x+1][y].isSeen = true; grid[x-1][y].isSeen = true; //set all blocks
-		grid[x][y+1].isSeen = true; grid[x][y-1].isSeen = true; //around this
-		grid[x+1][y+1].isSeen = true; grid[x+1][y-1].isSeen = true; //block to
-		grid[x-1][y+1].isSeen = true; grid[x-1][y-1].isSeen = true; //be seen
+		grid[x+1][y].is_seen = true; grid[x-1][y].is_seen = true; //set all blocks
+		grid[x][y+1].is_seen = true; grid[x][y-1].is_seen = true; //around this
+		grid[x+1][y+1].is_seen = true; grid[x+1][y-1].is_seen = true; //block to
+		grid[x-1][y+1].is_seen = true; grid[x-1][y-1].is_seen = true; //be seen
 
 		cx = x; cy = y; //set our x and y coords accordingly
 
@@ -547,40 +547,40 @@ void maze::gen_finish()
 	int y = Start.y;
 
 	cx = x; cy = y; //set the "character"'s (x, y)
-	grid[x][y].hasPlayer = true; //and set the player
-	grid[x][y].isSeen = true; //set the enter point to seen
+	grid[x][y].has_player = true; //and set the player
+	grid[x][y].is_seen = true; //set the enter point to seen
 
 	if(x == 0) //if it starts on the left
 	{
-		grid[x][y+1].isSeen = true; //block above
-		grid[x][y-1].isSeen = true; //block below
-		grid[x+1][y].isSeen = true; //block to the right
-		grid[x+1][y+1].isSeen = true; //right + up
-		grid[x+1][y-1].isSeen = true; //right + down
+		grid[x][y+1].is_seen = true; //block above
+		grid[x][y-1].is_seen = true; //block below
+		grid[x+1][y].is_seen = true; //block to the right
+		grid[x+1][y+1].is_seen = true; //right + up
+		grid[x+1][y-1].is_seen = true; //right + down
 	}
 	else if(x == SIZE-1) //if it starts on the right
 	{
-		grid[x][y+1].isSeen = true; //block above
-		grid[x][y-1].isSeen = true; //block below
-		grid[x-1][y].isSeen = true; //block to the left
-		grid[x-1][y+1].isSeen = true; //left + up
-		grid[x-1][y-1].isSeen = true; //left + down
+		grid[x][y+1].is_seen = true; //block above
+		grid[x][y-1].is_seen = true; //block below
+		grid[x-1][y].is_seen = true; //block to the left
+		grid[x-1][y+1].is_seen = true; //left + up
+		grid[x-1][y-1].is_seen = true; //left + down
 	}
 	else if(y == 0) //if it starts on the bottom
 	{
-		grid[x+1][y].isSeen = true; //block to the right
-		grid[x-1][y].isSeen = true; //block to the left
-		grid[x][y+1].isSeen = true; //block above
-		grid[x+1][y+1].isSeen = true; //up + right
-		grid[x-1][y+1].isSeen = true; //up + left
+		grid[x+1][y].is_seen = true; //block to the right
+		grid[x-1][y].is_seen = true; //block to the left
+		grid[x][y+1].is_seen = true; //block above
+		grid[x+1][y+1].is_seen = true; //up + right
+		grid[x-1][y+1].is_seen = true; //up + left
 	}
 	else if(y == SIZE-1) //if it starts on the top
 	{
-		grid[x+1][y].isSeen = true; //block to the right
-		grid[x-1][y].isSeen = true; //block to the left
-		grid[x][y-1].isSeen = true; //block below
-		grid[x+1][y-1].isSeen = true; //down + right
-		grid[x-1][y-1].isSeen = true; //down + left
+		grid[x+1][y].is_seen = true; //block to the right
+		grid[x-1][y].is_seen = true; //block to the left
+		grid[x][y-1].is_seen = true; //block below
+		grid[x+1][y-1].is_seen = true; //down + right
+		grid[x-1][y-1].is_seen = true; //down + left
 	}
 	else //error
 	{
