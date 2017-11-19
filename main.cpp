@@ -50,8 +50,7 @@ int main()
 
 	cout << "Welcome to the maze tester.\n";
 
-	do
-	{
+	do {
 		m.print();
 
 		x = m.get_x();
@@ -59,8 +58,7 @@ int main()
 		print_choices(m, x, y);
 
 		cin >> choicevar;
-		switch (choicevar)
-		{
+		switch (choicevar) {
 			case 0: //right
 				if(m.move(x+1, y) == 2) //check if the maze is completed
 					whilevar = false;
