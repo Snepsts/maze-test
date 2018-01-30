@@ -214,7 +214,7 @@ void maze::gen_exit(const int& ent)
 	uniform_int_distribution<int> wall(0, 3);
 
 	do {
-		swtch = wall(rand_albino);
+		swtch = wall(randmaze);
 	} while (swtch == ent); //this ensures the start and end will be on diff sides
 
 	gen_switch_case(swtch, false); //set the exit
