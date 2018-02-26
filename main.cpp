@@ -15,13 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>. */
 
 #include <iostream>
+#include <unistd.h>
 #include <chrono>
 #include "maze.h"
 
 using namespace std::chrono;
 using namespace std;
 
-void print_choices(const maze& m, const int& x, const int& y);
+void print_choices(const maze& m, const uint8_t& x, const uint8_t& y);
 
 int main()
 {
@@ -34,10 +35,10 @@ int main()
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(t2 - t1).count();
 
-	cout << "Generating a " << SIZE << "x" << SIZE << " maze took " << duration << " microseconds." << '\n';
+	cout << "Generating a " << (int)SIZE << "x" << (int)SIZE << " maze took " << duration << " microseconds." << '\n';
 	//m.print();
 	cout << "The minimum steps it will take to complete this maze is: ";
-	cout << m.min_steps() << '\n';
+	cout << (int)m.min_steps() << '\n';
 
 	high_resolution_clock::time_point finish = high_resolution_clock::now();
 	auto total_duration = duration_cast<microseconds>(finish - start).count();
@@ -46,7 +47,8 @@ int main()
 	//part 2, testing the maze itself
 	bool whilevar = true;
 	bool completed = true;
-	int choicevar, x, y;
+	uint8_t x, y;
+	int choicevar;
 
 	cout << "Welcome to the maze tester.\n";
 
@@ -88,7 +90,7 @@ int main()
 	return 0;
 }
 
-void print_choices(const maze& m, const int& x, const int& y)
+void print_choices(const maze& m, const uint8_t& x, const uint8_t& y)
 {
 	//since we're using namespace std we don't need the std:: on size_t & string
 	string dir = m.get_directions(x, y); //get the avail. directions

@@ -27,7 +27,7 @@ using std::uniform_int_distribution;
 maze::maze()
 {
 	//set the borders
-	for (int i = 0; i < SIZE; i++) {
+	for (uint8_t i = 0; i < SIZE; i++) {
 		//set to walls
 		grid[0][i].atr = Wall;
 		grid[SIZE-1][i].atr = Wall;
@@ -40,8 +40,8 @@ maze::maze()
 		grid[i][SIZE-1].gen = Visited;
 	}
 
-	for (int x = 0; x < SIZE; x++) {
-		for (int y = 0; y < SIZE; y++) {
+	for (uint8_t x = 0; x < SIZE; x++) {
+		for (uint8_t y = 0; y < SIZE; y++) {
 			grid[x][y].x = x;
 			grid[x][y].y = y;
 		}
@@ -51,9 +51,9 @@ maze::maze()
 void maze::gen_main()
 {
 	std::stack<block> s;
-	uniform_int_distribution<int> startpt(1, SIZE-3);
-	int x;
-	int y;
+	uniform_int_distribution<uint8_t> startpt(1, SIZE-3);
+	uint8_t x;
+	uint8_t y;
 
 	/* randmaze seems to consistently churn out the same number on it's initial
 	call. Afterwards, however, on each subsequent call it appears to be fine.
@@ -123,7 +123,7 @@ representing a direction to the string that we're returning. d is down, l is
 left, and yeah you get the point. This string gets returned and is dealt with
 accordingly.
 */
-std::string maze::get_directions(const int& x, const int& y, bool isGen) const
+std::string maze::get_directions(const uint8_t& x, const uint8_t& y, bool isGen) const
 {
 	std::string dir;
 	dir.clear(); //ensure the string is empty before starting
@@ -177,15 +177,15 @@ char maze::gen_next(const std::string& dir)
 	if (dir.length() <= 0)
 		return ' ';
 
-	uniform_int_distribution<int> letter(0, dir.length()-1);
+	uniform_int_distribution<uint8_t> letter(0, dir.length()-1);
 
 	return dir[letter(randmaze)];
 }
 
 void maze::gen_walls()
 {
-	for (int x = 0; x < SIZE; x++) {
-		for (int y = 0; y < SIZE; y++) {
+	for (uint8_t x = 0; x < SIZE; x++) {
+		for (uint8_t y = 0; y < SIZE; y++) {
 			if (grid[x][y].atr == Unassigned)
 				grid[x][y].atr = Wall;
 		}
@@ -194,13 +194,13 @@ void maze::gen_walls()
 
 void maze::gen_start()
 {
-	int swtch;
+	uint8_t swtch;
 	/* Walls:
 		0 = left
 		1 = up
 		2 = right
 		3 = down */
-	uniform_int_distribution<int> wall(0, 3);
+	uniform_int_distribution<uint8_t> wall(0, 3);
 
 	swtch = wall(randmaze); //we store the value bc we'll use it later
 
@@ -208,10 +208,10 @@ void maze::gen_start()
 	gen_exit(swtch);
 }
 
-void maze::gen_exit(const int& ent)
+void maze::gen_exit(const uint8_t& ent)
 {
-	int swtch;
-	uniform_int_distribution<int> wall(0, 3);
+	uint8_t swtch;
+	uniform_int_distribution<uint8_t> wall(0, 3);
 
 	do {
 		swtch = wall(randmaze);
@@ -222,10 +222,10 @@ void maze::gen_exit(const int& ent)
 	gen_finish();
 }
 
-void maze::gen_switch_case(const int& swtch, const bool& isEnter)
+void maze::gen_switch_case(const uint8_t& swtch, const bool& isEnter)
 {
-	int x, y;
-	uniform_int_distribution<int> block(0, SIZE-1);
+	uint8_t x, y;
+	uniform_int_distribution<uint8_t> block(0, SIZE-1);
 
 	/* This switch statement looks to see what side of the wall was determined
 	and looks to ensure the block next to the entrance/exit is open. Until it is
@@ -263,11 +263,11 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 
 	if (isEnter) { //this is called in the case of gen_start
 		grid[x][y].atr = Enter;
-		cout << "Enter is: x: " << grid[x][y].x << " y: " << grid[x][y].y << '\n';
+		cout << "Enter is: x: " << (int)grid[x][y].x << " y: " << (int)grid[x][y].y << '\n';
 		Start = grid[x][y];
 	} else { //is exit
 		grid[x][y].atr = Exit;
-		cout << "Exit is: x: " << grid[x][y].x << " y: " << grid[x][y].y << '\n';
+		cout << "Exit is: x: " << (int)grid[x][y].x << " y: " << (int)grid[x][y].y << '\n';
 		grid[x][y].gen = Unvisited; //for min_steps
 		End = grid[x][y];
 	}
@@ -275,10 +275,10 @@ void maze::gen_switch_case(const int& swtch, const bool& isEnter)
 
 void maze::gen_dead_end()
 {
-	for (int y = 1; y < SIZE-1; y++) { //y axis staying inside of the boundary
-		for (int x = 1; x < SIZE-1; x++) { //x axis inside of boundary
+	for (uint8_t y = 1; y < SIZE-1; y++) { //y axis staying inside of the boundary
+		for (uint8_t x = 1; x < SIZE-1; x++) { //x axis inside of boundary
 			if (grid[x][y].atr == Open) {
-				int counter = 0; //count the walls surrounding our block
+				uint8_t counter = 0; //count the walls surrounding our block
 
 				if (grid[x+1][y].atr == Wall) //check right
 					counter++;
@@ -296,11 +296,11 @@ void maze::gen_dead_end()
 	} //end y
 }
 
-int maze::min_steps()
+uint8_t maze::min_steps()
 {
-	int count = 0;
-	int x = Start.x;
-	int y = Start.y;
+	uint8_t count = 0;
+	uint8_t x = Start.x;
+	uint8_t y = Start.y;
 	bool is_finished = false;
 	std::stack<block> check, move, temp;
 
@@ -363,7 +363,7 @@ int maze::min_steps()
 	return count;
 }
 
-bool maze::check_spot(const int& x, const int& y)
+bool maze::check_spot(const uint8_t& x, const uint8_t& y)
 {
 	bool retvar = true;
 
@@ -377,25 +377,26 @@ bool maze::check_spot(const int& x, const int& y)
 
 void maze::print() const
 {
-	for (int y = SIZE-1; y >= 0; y--) { //y axis, inverted so (0,0) is bot left
-		for (int x = 0; x < SIZE; x++) { //x axis
+	for (uint8_t h = 0; h < SIZE; h++) { //y >= 0 does not work with uint8_t, so change approach
+		uint8_t y = SIZE-1 - h; //y axis, inverted so (0,0) is bot left,
+		for (uint8_t x = 0; x < SIZE; x++) { //x axis
 			if (!grid[x][y].is_seen) { //if it hasn't been seen yet
 				cout << "m"; //for mystery ooOOOoOOoOOOOOo spooky
 			} else { //otherwise it's been seen so we can draw it
 				switch(grid[x][y].atr) {
-					case -1:
+					case Enter:
 						if (grid[x][y].has_player) //check for a player
 							cout << "P"; //Player
 						else
 							cout << "B"; //Start/Beginning
 						break;
-					case 0:
+					case Exit:
 						if (grid[x][y].has_player) //check for a player
 							cout << "P"; //Player
 						else
 							cout << "E"; //Exit/End
 						break;
-					case 1:
+					case Open:
 						if (grid[x][y].has_player) //check for a player
 							cout << "P"; //Player
 						else if (grid[x][y].is_deadend) //check for a dead end
@@ -403,10 +404,10 @@ void maze::print() const
 						else
 							cout << " "; //Open
 						break;
-					case 2:
+					case Wall:
 						cout << "x"; //Wall
 						break;
-					case 3:
+					case Unassigned:
 						cout << "n"; //Invalid (Unassigned)
 						break;
 					default:
@@ -424,25 +425,25 @@ std::string maze::to_string() const
 {
 	std::string r = ""; //string to be returned
 
-	for (int y = SIZE-1; y >= 0; y--) { //y axis, inverted so (0,0) is bot left
-		for (int x = 0; x < SIZE; x++) { //x axis
+	for (uint8_t y = SIZE-1; y >= 0; y--) { //y axis, inverted so (0,0) is bot left
+		for (uint8_t x = 0; x < SIZE; x++) { //x axis
 			if (!grid[x][y].is_seen) { //if it hasn't been seen yet
 				r += "m"; //for mystery ooOOOoOOoOOOOOo spooky
 			} else { //otherwise it's been seen so we can draw it
 				switch(grid[x][y].atr) {
-					case -1:
+					case Enter:
 						if (grid[x][y].has_player) //check for a player
 							r += "P"; //Player
 						else
 							r += "B"; //Start/Beginning
 						break;
-					case 0:
+					case Exit:
 						if (grid[x][y].has_player) //check for a player
 							r += "P"; //Player
 						else
 							r += "E"; //Exit/End
 						break;
-					case 1:
+					case Open:
 						if (grid[x][y].has_player) //check for a player
 							r += "P"; //Player
 						else if (grid[x][y].is_deadend) //check for a dead end
@@ -450,10 +451,10 @@ std::string maze::to_string() const
 						else
 							r += " "; //Open
 						break;
-					case 2:
+					case Wall:
 						r += "x"; //Wall
 						break;
-					case 3:
+					case Unassigned:
 						r += "n"; //Invalid (Unassigned)
 						break;
 					default:
@@ -469,7 +470,7 @@ std::string maze::to_string() const
 	return r;
 }
 
-int maze::move(const int& x, const int& y) //it would return a bool but we need a finished case too
+uint8_t maze::move(const uint8_t& x, const uint8_t& y) //it would return a bool but we need a finished case too
 { //this is where a Russian ternary computer would come in handy :P
 	if (grid[x][y].atr == Exit) {
 		grid[cx][cy].has_player = false; //leave this block
@@ -498,8 +499,8 @@ int maze::move(const int& x, const int& y) //it would return a bool but we need 
 void maze::gen_finish()
 {
 	//work from the "start" block
-	int x = Start.x;
-	int y = Start.y;
+	uint8_t x = Start.x;
+	uint8_t y = Start.y;
 
 	cx = x; cy = y; //set the "character"'s (x, y)
 	grid[x][y].has_player = true; //and set the player

@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. */
 
 #include <string>
 
-const int SIZE = 11;
+const uint8_t SIZE = 11;
 
-enum attribute { Enter = -1, Exit = 0, Open = 1, Wall = 2, Unassigned = 3 };
-enum generation { Unvisited = 0, Visited = 1 };
+enum attribute : uint8_t { Enter = 0, Exit = 1, Open = 2, Wall = 3, Unassigned = 4 };
+enum generation : uint8_t { Unvisited = 0, Visited = 1 };
 
 /* maze blocks
  * attribute atr:
@@ -53,7 +53,7 @@ struct block
 	bool is_seen = false;
 	bool is_deadend = false;
 	generation gen = Unvisited;
-	int x, y; //these are for keeping track of the x/y for gen purposes
+	uint8_t x, y; //these are for keeping track of the x/y for gen purposes
 	bool has_player = false;
 	bool operator==(const block& b) const //for check_spot()
 	{ return (this->x == b.x && this->y == b.y && this->atr == b.atr); }
@@ -98,7 +98,7 @@ public:
 	 *
 	 * It returns said string containing all available directions.
 	 */
-	std::string get_directions(const int& x, const int& y, bool isGen = false) const;
+	std::string get_directions(const uint8_t& x, const uint8_t& y, bool isGen = false) const;
 
 	/* function min_steps
 	 * Runs through the maze until the end is reached. Then returns the amount
@@ -112,7 +112,7 @@ public:
 	 * (i.e): if the maze must be 40-60 steps, the exit will continue to be
 	 * placed until it is 40-60 steps away from the beginning.
 	 */
-	int min_steps();
+	uint8_t min_steps();
 
 	/* function print
 	 * Called whenever needed.
@@ -142,13 +142,13 @@ public:
 	 * Returns an int, 0 for unsuccessful move, 1 for successful move, and 2 to
 	 * indicate the maze has been completed
 	 */
-	int move(const int& x, const int& y);
+	uint8_t move(const uint8_t& x, const uint8_t& y);
 
 	//accessor for the "character"'s x position
-	int get_x() const { return cx; }
+	uint8_t get_x() const { return cx; }
 
 	//accessor for the "character"'s y position
-	int get_y() const { return cy; }
+	uint8_t get_y() const { return cy; }
 
 private:
 	//Methods:
@@ -193,7 +193,7 @@ private:
 	 *
 	 * Calls gen_switch_case and gen_dead_end
 	 */
-	void gen_exit(const int& ent);
+	void gen_exit(const uint8_t& ent);
 
 	/* function gen_switch_case
 	 * Called from gen_start and gen_exit
@@ -205,7 +205,7 @@ private:
 	 * selecting a spot, we move it to a separate function to save from having
 	 * 30 nearly identical lines of code.
 	 */
-	void gen_switch_case(const int& swtch, const bool& isEnter);
+	void gen_switch_case(const uint8_t& swtch, const bool& isEnter);
 
 	/* function gen_dead_end
 	 * Only called from gen_exit.
@@ -228,7 +228,7 @@ private:
 	 * returned. The other case, if it's open __and__ has not been visited, the
 	 * function returns true.
 	 */
-	bool check_spot(const int& x, const int& y);
+	bool check_spot(const uint8_t& x, const uint8_t& y);
 
 	/* function gen_finish
 	 * Called from gen_exit as the last function called in the generation
@@ -245,7 +245,7 @@ private:
 	//Members:
 	block grid[SIZE][SIZE];
 	block Start, End; //capitalize bc end all lowers throws an error
-	int cx, cy; //current "character" position x and y
+	uint8_t cx, cy; //current "character" position x and y
 };
 
 #endif //__MAZE_H__
